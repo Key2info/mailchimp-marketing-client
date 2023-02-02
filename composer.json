@@ -9,7 +9,7 @@
         "sdk",
         "api"
     ],
-    "homepage": "https://www.test.be",
+    "homepage": "https://www.key2info.be",
     "license": "proprietary",
     "require": {
         "php": ">=7.2",
