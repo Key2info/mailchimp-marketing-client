@@ -1,0 +1,39 @@
+{
+    "name": "adb/mailchimp-marketing-client",
+    "version": "0.4.1",
+    "description": "PHP Client to interface with Mailchimp API",
+    "keywords": [
+        "mailchimp",
+        "api-client",
+        "php",
+        "sdk",
+        "api"
+    ],
+    "homepage": "https://www.test.be",
+    "license": "proprietary",
+    "require": {
+        "php": ">=7.2",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "guzzlehttp/guzzle": "^6.2",
+        "symfony/serializer": "^5.0",
+        "symfony/property-access": "^5.0",
+        "doctrine/annotations": "^1.10",
+        "doctrine/cache": "^1.10",
+        "symfony/property-info": "^5.0",
+        "symfony/cache": "^5.0",
+        "phpdocumentor/reflection-docblock": "^5.1"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.5",
+        "friendsofphp/php-cs-fixer": "^2.16",
+        "monolog/monolog": "^1.0",
+        "fakerphp/faker": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "ADB\\MailchimpMarketingClient\\": "src/"
+        }
+    }
+}
