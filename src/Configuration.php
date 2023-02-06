@@ -249,6 +249,7 @@ class Configuration
     {
         $this->apiToken = $apiToken;
 
+        dd('t');
         if (strpos($this->apiUrl, '-') === false) {
             throw new \Exception("Invalid MailChimp API key `{$apiToken}` supplied.");
         }

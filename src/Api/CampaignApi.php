@@ -6,7 +6,7 @@ use ADB\MailchimpMarketingClient\Api\MailchimpApi;
 use ADB\MailchimpMarketingClient\Api\Request\CampaignCollectionRequest;
 use ADB\MailchimpMarketingClient\Model\Campaign;
 
-class CampaginApi extends MailchimpApi
+class CampaignApi extends MailchimpApi
 {
     /**
      * Get a collection of items.
