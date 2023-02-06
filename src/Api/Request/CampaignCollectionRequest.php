@@ -4,13 +4,11 @@ namespace ADB\MailchimpMarketingClient\Api\Request;
 
 use ADB\MailchimpMarketingClient\Api\Contracts\ApiRequestContract;
 use ADB\MailchimpMarketingClient\Api\Request\CollectionRequestContract;
-use ADB\MailchimpMarketingClient\Api\Traits\AccountIdTrait;
 use ADB\MailchimpMarketingClient\Api\Traits\CollectionTrait;
 use ADB\MailchimpMarketingClient\Model\Campaign;
 
 class CampaignCollectionRequest implements ApiRequestContract, CollectionRequestContract
 {
-    use AccountIdTrait;
     use CollectionTrait;
 
     protected $display = 'full';

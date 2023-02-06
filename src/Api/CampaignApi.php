@@ -16,8 +16,7 @@ class CampaignApi extends MailchimpApi
      */
     public function get(?int $start = null): iterable
     {
-        $request = (new CampaignCollectionRequest())
-            ->setAccountId($this->configuration->getAccountId());
+        $request = new CampaignCollectionRequest();
 
         foreach ($this->getCollection('/campaigns', $request) as $campaigns) {
             yield from $campaigns;
