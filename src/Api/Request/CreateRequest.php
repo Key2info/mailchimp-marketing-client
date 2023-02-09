@@ -1,6 +1,6 @@
 <?php
 
-namespace NeokIT\SoftTouchClient\Api\Request;
+namespace ADB\MailchimpMarketingClient\Api\Request;
 
 use ADB\MailchimpMarketingClient\Api\Contracts\ApiRequestContract;
 

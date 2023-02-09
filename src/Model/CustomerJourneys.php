@@ -4,51 +4,31 @@ namespace ADB\MailchimpMarketingClient\Model;
 
 class CustomerJourneys
 {
-    /**
-     *A brands unique key.
-     * @var string
-     */
-    protected $key;
+    protected $journeyId;
 
-    /**
-     * The brand name.
-     * @var string
-     */
-    protected $name;
+    protected $stepId;
 
-    /**
-     * @return string
-     */
-    public function getKey(): string
+    public function getJourneyId()
     {
-        return $this->key;
+        return $this->journeyId;
     }
 
-    /**
-     * @param string $key
-     * @return CustomerJourneys
-     */
-    public function setKey(string $key): CustomerJourneys
+    public function setJourneyId(string $journeyId)
     {
-        $this->key = $key;
+        $this->journeyId = $journeyId;
+
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getName(): string
+    public function getStepId()
     {
-        return $this->name;
+        return $this->stepId;
     }
 
-    /**
-     * @param string $name
-     * @return CustomerJourneys
-     */
-    public function setName(string $name): CustomerJourneys
+    public function setStepId(string $stepId)
     {
-        $this->name = $name;
+        $this->stepId = $stepId;
+
         return $this;
     }
 }

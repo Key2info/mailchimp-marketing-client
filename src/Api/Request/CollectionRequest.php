@@ -1,10 +1,10 @@
 <?php
 
-namespace ADB\MailchimpMarketingClient\Api\Contracts;
+namespace ADB\MailchimpMarketingClient\Api\Request;
 
-use ADB\MailchimpMarketingClient\Api\Contracts\ApiRequestContract;
+use ADB\MailchimpMarketingClient\Api\Request\ApiRequest;
 
-interface CollectionRequestContract extends ApiRequestContract
+interface CollectionRequest extends ApiRequest
 {
     /**
      * @param int $take Number of items to take.

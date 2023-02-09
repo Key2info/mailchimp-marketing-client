@@ -2,12 +2,17 @@
 
 namespace ADB\MailchimpMarketingClient\Api;
 
+use ADB\MailchimpMarketingClient\Api\Request\ApiRequest;
+use ADB\MailchimpMarketingClient\Api\Request\CollectionRequest;
+use ADB\MailchimpMarketingClient\Api\Request\ItemRequest;
 use ADB\MailchimpMarketingClient\Configuration;
 use Generator;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request;
 use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 
 abstract class MailchimpApi implements LoggerAwareInterface
 {
@@ -76,7 +81,7 @@ abstract class MailchimpApi implements LoggerAwareInterface
         $this->log('Fetching a collection of type {returnType}.', ['returnType' => $returnType], 'debug');
 
         try {
-            foreach ($this->getPaginatedRequest($relativePath, $request) as $responseBody) {
+            foreach ($this->getUnpaginatedRequest($relativePath, $request) as $responseBody) {
                 try {
                     yield $this->configuration->getSerializer()->deserialize(
                         $responseBody,
@@ -183,13 +188,46 @@ abstract class MailchimpApi implements LoggerAwareInterface
             return;
         }
 
-        $msg = "[SofTouch API] " . $msg;
+        $msg = "[MailChimp API] " . $msg;
 
         if (method_exists($this->logger, $level)) {
             $this->logger->$level($msg, $context);
         } else {
             $this->log('Wrong log level "{loglevel}" used.', ['loglevel' => $level], 'notice');
             $this->logger->info($msg, $context);
+        }
+    }
+
+    /**
+     * Gets a collection request, page by page.
+     *
+     * @param string $relativePath
+     * @param CollectionRequest $request
+     * @return Generator
+     */
+    public function getUnpaginatedRequest(string $relativePath, CollectionRequest $request)
+    {
+        try {
+            // Create Request
+            $httpRequest = $this->getHttpRequest($request, $relativePath);
+
+            [
+                $responseBody,
+                $statusCode,
+                $responseHeaders,
+            ] = $this->sendRequest($httpRequest);
+
+            $requestedModel = str_replace('/', '', $relativePath);
+            $jsonBody = json_decode($responseBody);
+
+            yield json_encode($jsonBody->{$requestedModel});
+
+            // Update collection pagination.
+            // $request->setSkip($request->getSkip() + $request->getTake());
+        } catch (ExceptionInterface $e) {
+            // Serialization exception occurred.
+            $this->log('Serialization exception occurred.', ['exception' => $e], 'warning');
+            throw new ApiException(null, null, $e);
         }
     }
 
@@ -213,10 +251,13 @@ abstract class MailchimpApi implements LoggerAwareInterface
                     $responseHeaders,
                 ] = $this->sendRequest($httpRequest);
 
-                yield $responseBody;
+                $requestedModel = str_replace('/', '', $relativePath);
+                $jsonBody = json_decode($responseBody);
+
+                yield $jsonBody->{$requestedModel};
 
                 // Update collection pagination.
-                $request->setSkip($request->getSkip() + $request->getTake());
+                // $request->setSkip($request->getSkip() + $request->getTake());
             } catch (ExceptionInterface $e) {
                 // Serialization exception occurred.
                 $this->log('Serialization exception occurred.', ['exception' => $e], 'warning');
@@ -237,13 +278,14 @@ abstract class MailchimpApi implements LoggerAwareInterface
     public function getHttpRequest(ApiRequest $apiRequest, string $relativePath)
     {
         $method = 'GET';
-        $resourcePath = $this->getResourcePath($relativePath);
-        $fullPath = $this->getFullPath($resourcePath);
+        // $resourcePath = $this->getResourcePath($relativePath);
+        $fullPath = $this->getFullPath($relativePath);
         $headers = $this->getDefaultHeaders();
 
         $requestParameters = $this->configuration->getNormalizer()->normalize($apiRequest, null, ['skip_null_values' => true, DateTimeNormalizer::FORMAT_KEY => 'Y-m-d H:i:s']);
-        $query = build_query($requestParameters);
-        $uri = "{$fullPath}?{$query}";
+        // $query = build_query($requestParameters);
+        // $uri = "{$fullPath}?{$query}";
+        $uri = "{$fullPath}";
 
         $this->log('Sending get request to {uri}.', ['uri' => $uri], 'debug');
 
@@ -319,10 +361,11 @@ abstract class MailchimpApi implements LoggerAwareInterface
     public function getHttpPostRequest(CreateRequest $apiRequest, string $relativePath)
     {
         $method = 'POST';
-        $resourcePath = $this->getResourcePath($relativePath);
-        $fullPath = $this->getFullPath($resourcePath);
+        // $resourcePath = $this->getResourcePath($relativePath);
+        $fullPath = $this->getFullPath($relativePath);
         $headers = $this->getDefaultHeaders();
         $headers['Content-Type'] = 'application/x-www-form-urlencoded';
+
 
         $requestParameters = $this->configuration->getNormalizer()->normalize($apiRequest, null, ['skip_null_values' => true]);
 
@@ -381,6 +424,7 @@ abstract class MailchimpApi implements LoggerAwareInterface
     {
         return [
             'User-Agent' => $this->configuration->getUserAgent(),
+            // 'Authorization' => sprintf('Basic %s', 'mailchimpmarketing:' . $this->configuration->getApiToken()),
         ];
     }
 
@@ -461,7 +505,7 @@ abstract class MailchimpApi implements LoggerAwareInterface
         /** @var Request $withHeader */
         $withHeader = $httpRequest->withAddedHeader(
             'Authorization',
-            $this->configuration->getAuthorization()
+            'Basic ' . base64_encode('mailchimpmarketing:' . $this->configuration->getApiToken()),
         );
 
         return $withHeader;

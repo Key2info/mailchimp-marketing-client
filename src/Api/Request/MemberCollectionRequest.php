@@ -5,9 +5,9 @@ namespace ADB\MailchimpMarketingClient\Api\Request;
 use ADB\MailchimpMarketingClient\Api\Contracts\ApiRequestContract;
 use ADB\MailchimpMarketingClient\Api\Request\CollectionRequest;
 use ADB\MailchimpMarketingClient\Api\Traits\CollectionTrait;
-use ADB\MailchimpMarketingClient\Model\Campaign;
+use ADB\MailchimpMarketingClient\Model\Member;
 
-class CampaignCollectionRequest implements ApiRequestContract, CollectionRequest
+class MemberCollectionRequest implements ApiRequestContract, CollectionRequest
 {
     use CollectionTrait;
 
@@ -18,7 +18,7 @@ class CampaignCollectionRequest implements ApiRequestContract, CollectionRequest
      */
     public static function getReturnType(): string
     {
-        return Campaign::class;
+        return Member::class;
     }
 
     /**
@@ -31,9 +31,9 @@ class CampaignCollectionRequest implements ApiRequestContract, CollectionRequest
 
     /**
      * @param string $display
-     * @return CampaignCollectionRequest
+     * @return MemberCollectionRequest
      */
-    public function setDisplay(string $display): CampaignCollectionRequest
+    public function setDisplay(string $display): MemberCollectionRequest
     {
         $this->display = $display;
         return $this;
